@@ -1,0 +1,232 @@
+.media-video div, .media-audio div{
+    display: flex;
+    height: 40px;
+    border: #ddd solid 1px;
+    align-items: center;
+    border-radius: 5px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+.media-video div i{
+    font-size: 47px;
+    color: #e74c3c;
+}
+.media-audio div i{
+    font-size: 20px;
+}
+.media-video div:last-child i{
+    color: #3498db;
+}
+.media-video div input, .media-audio div input{
+    height: 100%;
+    flex: 1;
+    padding-left: 10px;
+    padding-right: 10px;
+    outline: none;
+    border: none;
+}
+.media-video label, .media-audio label{
+    margin-bottom: 10px;
+}
+.media-audio div > span{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background-color: #3498db;
+    color: #fff !important;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.media-audio div > span i{
+    margin-right: 5px;
+}
+.btn-question{
+    text-align: center;
+    position: relative;
+}
+.list-type-content{
+    margin-bottom: 10px;
+    margin-left: 10px;
+    display: none;
+}
+.list-type-content label{
+    padding-top: 0 !important;
+}
+.media{
+    margin-top: 30px !important;
+}
+.list-options{
+    padding-top: 15px;
+}
+.list-options .col-lg-6{
+    margin-bottom: 20px;
+}
+.option-item{
+    display: flex;
+    height: 35px;
+    border: #ddd solid 1px;
+    position: relative;
+}
+.option-item:before{
+    position: absolute;
+    content: "";
+    width: 3%;
+    height: 100%;
+    bottom: 16px;
+    right: 0;
+}
+.option-name{
+    display: flex;
+    align-items: center;
+    width: 35px;
+    justify-content: center;
+    border-right: #ddd solid 1px;
+    background: #89898933;
+}
+.correct{
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
+}
+.option-item input{
+    border: none;
+    padding-left: 10px;
+    padding-right: 10px;
+    flex: 1;
+    outline: none;
+}
+.destroy-option, .destroy-document{
+    position: absolute;
+    right: 0px;
+    color: #c0392b;
+    cursor: pointer;
+    top: -15px;
+    display: none;
+}
+.option-item:hover .destroy-option{
+    display: block;
+}
+.test-custom-item{
+    height: 40px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.test-custom-item-input{
+    margin-bottom: 0 !important;
+}
+.test-custom-item-input input{
+    height: 40px;
+    padding-left: 20px;
+    padding-right: 30px;
+    font-size: 16px;
+    width: 50%;
+}
+.test-custom-item span, .test-custom-item div{
+    flex: 1;
+}
+.test-custom-item div{
+    text-align: center;
+}
+.test-custom-item span{
+    text-align: right;
+    margin-right: 50px;
+}
+.test-custom-item-input > div{
+    position: relative;
+}
+.add-option-item{
+    text-align: center;
+    border: #ddd dotted 1px;
+}
+.add-document{
+    text-align: left;
+}
+.add-option-item i, .add-document i{
+    width: 35px;
+    height: 35px;
+    background-color: #89898933;
+    line-height: 35px;
+    font-size: 16px;
+    border-radius: 50px;
+    cursor: pointer;
+    text-align: center;
+}
+.box-image-option{
+    max-width: 230px;
+    max-height: 150px;
+    position: fixed;
+    z-index: 9999999;
+    border: #ddd solid 1px;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: #ddd 0 0 5px;
+}
+.box-image-option img{
+    width: 100%;
+    height: 100%;
+}
+.test-additional{
+    margin-top: 30px !important;
+    border-top: #ddd solid 1px;
+    position: relative;
+    overflow: unset;
+    font-size: 13px;
+    padding-top: 15px;
+}
+.detail-question-title{
+    background-color: #89898933;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: justify;
+}
+.detail-question-option{
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.avatar img{
+    width: 180px;
+    height: 180px;
+}
+.box-btn{
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+.box-btn button{
+    margin-left: 10px;
+}
+.box-avatar{
+    display: flex;
+    flex: 0.5;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+}
+.avatar{
+    display: flex;
+    justify-content: center;
+}
+.box-avatar button{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    margin-top: 10px;
+}
+#modal-profile .modal-body{
+    display: flex;
+}
+.box-info-student, #form-import-student{
+    flex: 1;
+}
+.box-info-student > div{
+    width: 80%;
+    margin: auto;
+}
