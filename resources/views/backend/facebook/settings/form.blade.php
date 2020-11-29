@@ -47,7 +47,6 @@
                                 <option value="4">Hai lần sai ảnh</option>
                                 <option value="5">Sai Password</option>
                                 <option value="6">2FA</option>
-                                <option value="7">CP sau hoàn thành</option>
                             </select>
                         </div>
                         <div class="col-sm-12">

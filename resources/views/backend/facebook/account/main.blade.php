@@ -5,6 +5,7 @@
 
 @section('style')
     <link href="css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+    <link href="css/plugins/dataTables/dataTables.checkboxes.css" rel="stylesheet">
     <style>
         table.dataTables > thead > tr > th.stt {
             width: 15px;
@@ -76,7 +77,7 @@
             border-radius: 0 .25rem .25rem 0;
         }
 
-        input[type="file" i] {
+        input[type="file"] {
             appearance: initial;
             background-color: initial;
             cursor: default;
@@ -104,7 +105,6 @@
             appearance: textfield;
             background-color: -internal-light-dark(rgb(255, 255, 255), rgb(59, 59, 59));
             -webkit-rtl-ordering: logical;
-            cursor: text;
             margin: 0em;
             font: 400 13.3333px Arial;
             padding: 1px 2px;
@@ -112,6 +112,12 @@
             border-style: inset;
             border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
             border-image: initial;
+        }
+        input{
+            cursor: pointer;
+        }
+        .dt-checkboxes {
+            cursor: pointer;
         }
 
     </style>
@@ -126,27 +132,70 @@
         </div>
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
-        <div class="row" style="margin-bottom: 10px">
-            <label>Upload File Nick</label>
-            <div class="col-lg-12">
-                <div class="col-md-4">
-                    <div class="custom-file">
-                        <input id="file" type="file" class="custom-file-input form-control" name="file">
-                        <label for="file" class="custom-file-label">Choose file...</label>
-                    </div>
+        <div class="row">
+            <div class="col-md-2">
+                <label>Upload File Nick</label>
+                <div class="custom-file">
+                    <input id="file" type="file" class="custom-file-input form-control" name="file">
+                    <label for="file" class="custom-file-label">Choose file...</label>
                 </div>
-                <div class="col-md-4">
-                    <select name="stream" id="stream" class="form-control form-group">
-                        <option value="1">Stream 1</option>
-                        <option value="2">Stream 2</option>
-                        <option value="3">Stream 3</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <span class="input-group-append">
-                        <button type="button" class="btn btn-primary" name="btn-upload">Upload</button>
-                    </span>
-                </div>
+            </div>
+            <div class="col-md-2">
+                <label for="stream">&nbsp;</label>
+                <select name="stream" id="stream" class="form-control form-group">
+                    <option value="1">Stream 1</option>
+                    <option value="2">Stream 2</option>
+                    <option value="3">Stream 3</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="">&nbsp;</label>
+                <span class="input-group-append">
+                    <button type="button" class="btn btn-primary form-control" name="btn-upload">Upload</button>
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <label for="filter-status">Lọc theo trạng thái</label>
+                <select name="filter-status" id="filter-status" class="form-control filter">
+                    <option value="0">Tất cả trạng thái</option>
+                    <option value="1">Chưa thao tác</option>
+                    <option value="2">Hoàn Thành</option>
+                    <option value="3">Không có ảnh</option>
+                    <option value="4">Hai lần sai ảnh</option>
+                    <option value="5">Sai Password</option>
+                    <option value="6">2FA</option>
+                    <option value="7">CP sau hoàn thành</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="filter-user">Lọc theo user</label>
+                <select name="filter-user" id="filter-user" class="form-control filter">
+                    <option value="0">Tất cả user</option>
+                    @foreach($users as $user)
+                        <option value="{{ $user->id }}">{{ $user->display_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="filter-stream">Lọc theo stream</label>
+                <select name="filter-stream" id="filter-stream" class="form-control filter">
+                    <option value="0">Tất cả stream</option>
+                    <option value="1">Stream 1</option>
+                    <option value="2">Stream 2</option>
+                    <option value="3">Stream 3</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="filter-created-at">Ngày upload</label>
+                <input type="date" id="filter-created-at" name="created_at" class="form-control filter">
+            </div>
+            <div class="col-md-2">
+                <label for="">&nbsp;</label>
+                <span class="input-group-append">
+                    <button type="button" class="btn btn-primary form-control" name="btn-download">Download</button>
+                </span>
             </div>
         </div>
         <div class="row">
@@ -157,6 +206,7 @@
                             <table class="table table-striped table-bordered table-hover dataTables">
                                 <thead>
                                 <tr>
+                                    <th></th>
                                     <th class="stt">STT</th>
                                     <th class="uid">UID</th>
                                     <th class="old-pass">Pass Cũ</th>
@@ -166,7 +216,7 @@
                                     <th class="email">Email</th>
                                     <th class="email">PassEmail</th>
                                     <th class="ads">ADS</th>
-                                    <th class="ads">User Agent</th>
+                                    <th class="ads">User</th>
                                     <th class="status">Status</th>
                                     <th class="action">Thao Tác</th>
                                 </tr>
@@ -182,12 +232,13 @@
 
 @section('script')
     <script src="js/plugins/dataTables/datatables.min.js"></script>
+    <script src="js/plugins/dataTables/dataTables.checkboxes.min.js"></script>
     <!-- Page-Level Scripts -->
     <script>
         let mainUrl = '{{$currentFunction->route}}';
         $(document).ready(function(){
             let Table = $('.dataTables').DataTable({
-                select: true,
+                // select: true,
                 bSort: false,
                 bInfo: true,
                 bLengthChange: false,
@@ -197,6 +248,17 @@
                 paging: true,
                 pageLength: 15,
                 responsive: true,
+                buttons: [
+                    {
+                        text: 'Xóa hàng loạt',
+                        action: function ( e, dt, node, config ) {
+                            let rowsSelected = dt.column(0).checkboxes.selected();
+                            // console.log(rowsSelected.toArray())
+                            deleteMultipleRows(rowsSelected.toArray())
+                        },
+                        className: 'btn btn-danger'
+                    }
+                ],
                 // ajax: mainUrl + '/getDatatable',
                 ajax: $.extend({
                         url: mainUrl + '/getDatatable'
@@ -205,14 +267,31 @@
                     },
                     {
                         data: function (d) {
-                            d.role = $('select[name=role]').val();
+                            d.status = $('select[name=filter-status]').val();
+                            d.user = $('select[name=filter-user]').val();
+                            d.stream = $('select[name=filter-stream]').val();
+                            d.created_at = $('input[name=created_at]').val();
                         }
                     }),
-                dom: '<"row"<"col-sm-12 add-select-role">><"row"<"col-sm-6"i><"col-sm-6"f>>rtp',
+                dom: '<"row"<"col-sm-12 add-select-role">><"row"<"col-sm-6"iB><"col-sm-6"f>>rtp',
                 language: {
                     'url'   :   '{{ asset(__('datatable.language')) }}'
                 },
+                "columnDefs": [
+                    {"defaultContent": '', "targets": [9]},
+                    {"searchable": '', "targets": [9]},
+                    {
+                        'targets': 0,
+                        'checkboxes': {
+                            'selectRow': true
+                        }
+                    }
+                ],
+                'select': {
+                    'style': 'multi'
+                },
                 columns     :   [
+                    {   data: 'id'  },
                     {
                         data    :   'id',
                         className:  'text-center',
@@ -228,7 +307,7 @@
                     {   data    :   'email'   },
                     {   data    :   'emailpass'   },
                     {   data    :   'ads'   },
-                    {   data    :   'useragent'   },
+                    {   data    :   'user.display_name' ?  'user.display_name' : ''  },
                     {
                         data    :   'status',
                         className: 'text-center',
@@ -238,8 +317,9 @@
                                 case 2: button = `<span class="label label-primary">Hoàn thành</span>`; break;
                                 case 3: button = `<span class="label label-warning-light">Không có ảnh</span>`; break;
                                 case 4: button = `<span class="label label-warning">Hai lần sai ảnh</span>`; break;
-                                case 5: button = `<span class="label label-danger">Sai pass</span>`; break;
+                                case 5: button = `<span class="label label-danger">Sai Password</span>`; break;
                                 case 6: button = `<span class="label label-warning">2FA</span>`; break;
+                                case 7: button = `<span class="label label-warning">CP sau hoàn thành</span>`; break;
                                 default: button = `<span class="label label-default">Chưa thao tác</span>`;
                             }
                             return button;
@@ -309,6 +389,56 @@
                 });
             });
 
+            $(document).on('change', '.filter', function () {
+                Table.ajax.reload();
+            })
+
+            /**
+             * Download file
+             */
+            $(document).on('click', 'button[name=btn-download]', function () {
+                let status = $('select[name=filter-status]').val();
+                let user = $('select[name=filter-user]').val();
+                let stream = $('select[name=filter-stream]').val();
+                let url = mainUrl + `/download?user=${user}&status=${status}&stream=${stream}`;
+                window.open(url)
+            })
+
+            /**
+             * Delete multiple account
+             *
+             */
+            function deleteMultipleRows(rowsSelected) {
+                let id  = 'deleteMultipleRows'
+                let url =   mainUrl + '/' + id;
+                swal({
+                    title: "Bạn có muốn xóa các account này không??",
+                    text: "Khi xóa chức năng sẽ không thể khôi phục lại",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "OK",
+                    cancelButtonText: "Không",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                }, function (config) {
+                    if (config){
+                        $.ajax(url,{
+                            type    :   'DELETE',
+                            data    :   {
+                                _token  :   '{{csrf_token()}}',
+                                rows    :   rowsSelected
+                            },
+                            success :   function (respon) {
+                                notification(respon.type, respon.title, respon.content);
+                                if(respon.type === 'success'){
+                                    Table.ajax.reload();
+                                }
+                            }
+                        })
+                    }
+                });
+            }
         });
 
         $('.custom-file-input').on('change', function() {

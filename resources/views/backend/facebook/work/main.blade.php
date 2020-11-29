@@ -129,7 +129,7 @@
             cursor: pointer;
         }
 
-        input {
+        input, .copy-nick {
             cursor: pointer;
         }
 
@@ -161,7 +161,7 @@
                                 <thead>
                                 <tr>
                                     <th class="stt">STT</th>
-{{--                                    <th class="uid">UID</th>--}}
+                                    <th class="uid">Nick</th>
                                     <th class="new-pass">Pass Mới</th>
                                     <th class="typevia">Loại via</th>
                                     <th class="2fa">2FA</th>
@@ -225,7 +225,13 @@
                             return meta.row +1;
                         }
                     },
-                    // {   data    :   'uid'   },
+                    {
+                        data    :   'uid',
+                        className: 'text-center',
+                        render  :   function (data, type, row, meta) {
+                            return `<i class="fa fa-copy fa-2x copy-nick"></i>`
+                        }
+                    },
                     {   data    :   'newpass'   },
                     {   data    :   'typevia'   },
                     {   data    :   '2fa'   },
@@ -263,6 +269,7 @@
                                 case 4: button = `<span class="label label-warning">Hai lần sai ảnh</span>`; break;
                                 case 5: button = `<span class="label label-danger">Sai password</span>`; break;
                                 case 6: button = `<span class="label label-warning">2FA</span>`; break;
+                                case 7: button = `<span class="label label-warning">CP sau hoàn thành</span>`; break;
                                 default: button = `<span class="label label-default">Chưa thao tác</span>`;
                             }
                             return button;
@@ -325,9 +332,39 @@
              */
 
             $(document).on('click', 'input', function () {
-                let copyText = $(this);
+                let copyText = $(this).val();
+                copyToClipboard(copyText)
+            })
+
+            $(document).on('click', '.copy-nick', function () {
+                let data = Table.row($(this).parents('tr')).data();
+                let string = `${data.uid}|${data.oldpass}|${data.useragent}`
+                copyToClipboard(string)
+            })
+
+            const copyToClipboard = str => {
+                const el = document.createElement('textarea');
+                el.value = str;
+                el.setAttribute('readonly', '');
+                el.style.position = 'absolute';
+                el.style.left = '-9999px';
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+            };
+
+            function copy(copyText){
+                console.log(copyText.select())
                 copyText.select();
                 document.execCommand("copy");
+            }
+
+            $(document).on('click', '.fa-download', function () {
+                let id = Table.row($(this).parents('tr')).data();
+                let url = `${mainUrl}/download?id=${id.id}`;
+                window.open(url)
+
             })
 
 

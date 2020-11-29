@@ -2,10 +2,10 @@
 
 namespace App;
 
-use Illuminate\Filesystem\Cache;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Trebol\Entrust\Traits\EntrustUserTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -20,6 +20,7 @@ class User extends Authenticatable
 
     }
     protected $adminRoles = ['Owner', 'Admin'];
+    protected $appends = ['isOnline'];
 
     /* Cường's code */
 
@@ -97,6 +98,19 @@ class User extends Authenticatable
 
     public function info(){
         return $this->hasOne(UserInfo::class, 'user_id', 'id');
+    }
+
+    public function Account()
+    {
+        return $this->hasMany(Account::class, 'user_id', 'id');
+    }
+
+    public function isOnline(){
+        return Cache::has('user-online-'.$this->id);
+    }
+
+    public function getIsOnlineAttribute(){
+        return $this->isOnline();
     }
 
     /**

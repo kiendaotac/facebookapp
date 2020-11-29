@@ -59,6 +59,8 @@ table.dataTables-users {
                                     <th class="name">{{ __('users.username') }}</th>
                                     <th class="email">{{ __('users.email') }}</th>
                                     <th class="display_name">{{ __('users.display_name') }}</th>
+                                    <th class="display_name">Data đã lấy</th>
+                                    <th class="state">Online</th>
                                     <th class="state">{{ __('users.state') }}</th>
                                     <th class="action">{{ __('users.action') }}</th>
                                 </tr>
@@ -77,7 +79,7 @@ table.dataTables-users {
 
 @section('script')
 <script src="{{ asset('js/plugins/dataTables/datatables.min.js') }}"></script>
-<script src={{ asset('js/custom.js') }}></script>
+{{--<script src={{ asset('js/custom.js') }}></script>--}}
 <!-- Page-Level Scripts -->
 <script>
    let mainUrl = '{{$currentFunction->route}}';
@@ -128,6 +130,22 @@ table.dataTables-users {
         {   data    :   'name'},
         {   data    :   'email'},
         {   data    :   'display_name'},
+        {
+            data    :   'account_count',
+            className: 'text-center',
+            render  : function (data, type, row, meta) {
+                return `${row.AccountSuccess}/${data}`
+            }
+        },
+        {
+            className: 'text-center',
+            data    :   'isOnline',
+            render  : function (data, type, row, meta) {
+                let onlineLabel = `<span class="label label-primary">Online</span>`;
+                let offlineLabel = `<span class="label label-primary">Online</span>`;
+                return data ? onlineLabel : offlineLabel;
+            }
+        },
         {
             data    :   'state',
             render  :   function (data, type, row, meta) {

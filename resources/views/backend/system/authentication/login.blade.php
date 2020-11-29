@@ -25,7 +25,7 @@
     <div>
         
         <h3>Welcome to {{config('custom.app_name')}}</h3>
-        <p>Phần mền trắc nghiệm Tiếng Anh online<br>Vui lòng đăng nhập để truy cập vào trang cá nhân của bạn.
+{{--        <p>Phần mền trắc nghiệm Tiếng Anh online<br>Vui lòng đăng nhập để truy cập vào trang cá nhân của bạn.--}}
             <!--Continually expanded and constantly improved Inspinia Admin Them (IN+)-->
         </p>
         <p>&nbsp;</p>

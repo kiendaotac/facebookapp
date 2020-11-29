@@ -29,7 +29,7 @@
 
         </div>
         <h3>Welcome to {{config('custom.app_name')}}</h3>
-        <p>Phần mềm ôn luyện Tiếng Anh online<br>Vui lòng đăng nhập để truy cập vào trang cá nhân của bạn.
+{{--        <p>Phần mềm ôn luyện Tiếng Anh online<br>Vui lòng đăng nhập để truy cập vào trang cá nhân của bạn.--}}
         </p>
         <p>&nbsp;</p>
         @if(count($errors->all()))

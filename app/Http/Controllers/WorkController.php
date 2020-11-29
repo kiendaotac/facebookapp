@@ -3,9 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Account;
+use App\Events\AccountAvailabeEvent;
+use App\Events\AccountSuccessEvent;
 use App\Functions;
+use App\Schedule;
+use App\Setting;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class WorkController extends Controller
@@ -41,7 +47,22 @@ class WorkController extends Controller
     public function store(Request $request)
     {
         if ($request->ajax()) {
-            Account::where('status', 1)->orderBy('user_id', 'DESC')->limit(2)->update(['user_id'=>Auth::id()]);
+            if ($request->schedule === 'schedule'){
+                Schedule::create([
+                    'user_id'=>Auth::id(),
+                    'date'=>Carbon::today(),
+                    'time'=>$request->times
+                ]);
+
+                return response()->json([
+                    'type'      => 'success',
+                    'title'     => 'Thành công!',
+                    'content'   => 'Đăng ký lịch thành công !!'
+                ]);
+            }
+            $limit = Setting::where('key', 'account')->first()->value;
+            $stream = Setting::where('key', 'stream')->first()->value;
+            Account::where('status', 1)->where('stream',$stream)->orderBy('user_id', 'DESC')->limit($limit)->update(['user_id'=>Auth::id()]);
             return response()->json([
                 'type'      => 'success',
                 'title'     => 'Thành công!',
@@ -64,9 +85,16 @@ class WorkController extends Controller
      */
     public function show(Request $request, $id)
     {
+        if ($id === 'download') {
+            $fileID = $request->id;
+            $uid = Account::where('user_id', Auth::id())->where('id', $fileID)->where('status',1)->firstOrFail()->uid;
+            $path = "data/$uid".".html";
+            return response()->download(storage_path("app/public/".$path));
+        }
         if ($request->ajax()) {
             if ($id === 'getDatatable'){
-                return datatables(Account::where('user_id', Auth::id())->where('status', 1)->limit(2)->get())->removeColumn(['oldpass', 'uid', 'emailpass'])->make(true);
+                $limit = Setting::where('key', 'account')->first()->value;
+                return datatables(Account::where('user_id', Auth::id())->where('status', 1)->limit($limit)->get())->removeColumn(['emailpass'])->make(true);
             }
         } else {
             return response()->json([
@@ -119,12 +147,15 @@ class WorkController extends Controller
                     'email'     =>  request('email'),
                     'status'    =>  request('status')
                 ]);
-
+            event(new AccountSuccessEvent(Auth::user()));
+            $stream = Setting::where('key', 'stream')->first()->value;
+            $availableAccount = Account::where('status', 1)->where('stream', $stream)->count();
+            event(new AccountAvailabeEvent($availableAccount));
 
             return response()->json([
                 'type'      => 'success',
                 'title'     => 'Thành công!',
-                'content'   => 'Lấy Account thành công !!'
+                'content'   => 'Update Account thành công !!'
             ]);
         }
         return response()->json([

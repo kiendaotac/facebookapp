@@ -38,6 +38,10 @@
             appearance: none;
             margin: 0;
         }
+        .vl {
+            border-left: 1px solid #e2e2e2;
+            height: 500px;
+        }
     </style>
     @yield('style')
 
@@ -53,7 +57,19 @@
 
         <!-- Header -->
     @include('layouts.header')
-
+        @php
+            $message = \App\Setting::where('key', 'message')->first()->value;
+        @endphp
+        @if(!empty($message))
+        <div class="row">
+            <div class="col-sm-12" style="padding-left: 0px !important; padding-right: 0px !important;">
+                <br>
+                <div class="alert alert-danger">
+                    {!! $message !!}
+                </div>
+            </div>
+        </div>
+        @endif
     <!-- Content -->
     @yield('content')
 
@@ -64,6 +80,44 @@
 
     <!-- right sidebar -->
     {{--@include('layouts.right-sidebar')--}}
+    <div class="modal inmodal" id="modal-schedule" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                                class="sr-only">Close</span></button>
+                    <i class="fa fa-clock-o modal-icon"></i>
+                    <h4 class="modal-title">Đăng ký thời gian làm việc ngày mai</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form action="#" method="post" name="form-schedule">
+                            <div class="col-sm-6">
+                                <h3>Sáng</h3>
+                                <div class="row">
+                                @for($i = 1; $i <= 12; $i++)
+                                    <div class="col-sm-6"><label> <input type="checkbox" name="times[]" value="{{ $i }}"> {{ $i }} giờ </label></div>
+                                @endfor
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <h3>Chiều</h3>
+                                <div class="row">
+                                @for($i = 1; $i <= 12; $i++)
+                                    <div class="col-sm-6"><label> <input type="checkbox" name="times[]" value="{{ $i }}"> {{ $i }} giờ </label></div>
+                                @endfor
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" name="update-schedule"><i class="fa fa-save"></i> Đăng ký</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- Mainly scripts -->
 <script src="{!! asset('js/jquery-3.1.1.min.js') !!}"></script>
@@ -158,6 +212,22 @@
         }
     });
     $(document).ready(function () {
+        let schedule = '{{ \App\Schedule::where('date', \Carbon\Carbon::today())->where('user_id', \Illuminate\Support\Facades\Auth::id())->first() }}'
+        if (!schedule) {
+            $('#modal-schedule').modal({backdrop: 'static', keyboard: false, show : true});
+        }
+        $(document).on('click', 'button[name=update-schedule]', function () {
+            let url = 'work';
+            let formData = $('form[name=form-schedule]').serialize() + '&schedule=schedule';
+            $.ajax(url, {
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    notification(response.type, response.title, response.content);
+                    $('#modal-schedule').modal('hide');
+                }
+            })
+        })
         {{--let user =  '{{ \Illuminate\Support\Facades\Auth::id() }}';--}}
         {{--let fb_check    =   parseInt('{{ \App\StudentShift::count() }}');--}}
         {{--let link    =   '{{ asset('course/1') }}';--}}
@@ -249,5 +319,32 @@
 @yield('script-upload')
 @yield('script-lesson')
 @yield('script')
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+<script>
+
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('48597400c637ee2013b1', {
+        cluster: 'ap3'
+    });
+
+    var channel = pusher.subscribe('facebook-message');
+    channel.bind('facebook-message-event', function(data) {
+        if (data.message) {
+            alert(`Có thông báo mới\n${data.message}`)
+        }
+    });
+    //user.1
+    let userChanel = 'user.{{ \Illuminate\Support\Facades\Auth::id() }}'
+    let privateChanel = pusher.subscribe(userChanel);
+    privateChanel.bind('user-account-event', function (data) {
+        $('#account').html(data.account)
+    });
+    let availableAccountChanel = pusher.subscribe('available-account');
+    availableAccountChanel.bind('available-account-event', function (data) {
+        $('#account-available').html(data.accountAvailable)
+    })
+</script>
 </body>
 </html>

@@ -2,26 +2,26 @@
 
 namespace App\Http\Middleware;
 
-use App\Providers\RouteServiceProvider;
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
-class RedirectIfAuthenticated
+class LastUserActivity
 {
     /**
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next)
     {
-        if (Auth::guard($guard)->check()) {
-            return redirect('work');
+        if (Auth::check()){
+            $expiresAt = Carbon::now()->addMinutes(1);
+            Cache::put('user-online-'.Auth::id(), true, $expiresAt);
         }
-
         return $next($request);
     }
 }

@@ -80,12 +80,16 @@ class UsersController extends Controller
      *
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function show(Request $request, $id)
     {
         if ($request->ajax()) {
             if ($id === 'getDatatable') {
-                return datatables(User::query())->make(true);
+                $users = User::withCount(['Account', 'Account as AccountSuccess' => function($q){
+                    $q->where('status', 2);
+                }])->get();
+                return datatables($users)->make(true);
             }
         } else {
             return response()->json([

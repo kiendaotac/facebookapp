@@ -9,6 +9,15 @@
             </form>
         </div>
         <ul class="nav navbar-top-links navbar-right">
+            <li style="font-size: 18px; margin-right: 15px;">
+                @php
+                    $stream = \App\Setting::where('key', 'stream')->first()->value;
+                @endphp
+                Số account còn trên hệ thống: <span id="account-available" class="red">{{ \App\Account::where('status', 1)->where('stream', $stream)->count() }}</span>
+            </li>
+            <li style="font-size: 18px">
+                Số account hoàn thành: <span id="account" class="red">{{ \Illuminate\Support\Facades\Auth::user()->Account()->where('status', 2)->count() }}</span>
+            </li>
             
             {{--<li class="dropdown notify">
                 <ul class="dropdown-menu dropdown-alerts box-notify">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Account;
 use App\Functions;
 use App\Role;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,7 +20,8 @@ class AccountController extends Controller
     {
         $url                =   getURL();
         $currentFunction    =   Functions::where('route',$url)->where('state',1)->orderBy('id','desc')->first();
-        return view('backend.facebook.account.main',compact('currentFunction'));
+        $users              =   User::all();
+        return view('backend.facebook.account.main',compact('currentFunction', 'users'));
     }
 
     /**
@@ -112,9 +114,65 @@ class AccountController extends Controller
      */
     public function show(Request $request, $id)
     {
+        if ($id === 'download'){
+            $status = $request->status;
+            $stream = $request->stream;
+            $user = $request->user;
+            $created_at = $request->created_at;
+            $accounts = Account::query();
+            if ($status != 0){
+                $accounts = $accounts->where('status', $status);
+            }
+            if ($stream != 0){
+                $accounts = $accounts->where('stream', $stream);
+            }
+            if ($user != 0){
+                $accounts = $accounts->where('user_id', $user);
+            }
+            if (!empty($created_at)){
+                $accounts = $accounts->whereDate('created_at', $created_at);
+            }
+
+            $accounts = $accounts->get();
+            $content = "";
+            foreach ($accounts as $account){
+                $uid = $account->uid;
+                $oldpass = $account->oldpass;
+                $newpass = $account->newpass;
+                $email = $account->email;
+                $useragent = $account->useragent;
+                $content .= $uid . '|' . $oldpass . '|' . $newpass . '|' . $email . '|' . $useragent ."\n";
+            }
+            $fileName = "backup".date("Y-m-d-H-i-s").".txt";
+            $headers = [
+                'Content-type' => 'text/plain',
+                'Content-Disposition' => sprintf('attachment; filename="%s"', $fileName),
+                'Content-Length' => strlen($content)
+            ];
+            // make a response, with the content, a 200 response code and the headers
+            return response()->make($content, 200, $headers);
+
+        }
         if ($request->ajax()) {
             if ($id === 'getDatatable'){
-                return datatables(Account::query())->make(true);
+                $status = $request->status;
+                $stream = $request->stream;
+                $user = $request->user;
+                $created_at = $request->created_at;
+                $accounts = Account::with('User');
+                if ($status != 0){
+                    $accounts = $accounts->where('status', $status);
+                }
+                if ($stream != 0){
+                    $accounts = $accounts->where('stream', $stream);
+                }
+                if ($user != 0){
+                    $accounts = $accounts->where('user_id', $user);
+                }
+                if (!empty($created_at)){
+                    $accounts = $accounts->whereDate('created_at', $created_at);
+                }
+                return datatables($accounts)->make(true);
             }
         } else {
             return response()->json([
@@ -156,6 +214,9 @@ class AccountController extends Controller
     public function destroy(Request $request, $id)
     {
         if ($request->ajax()) {
+            if ($id == 'deleteMultipleRows'){
+                $id = $request->rows;
+            }
             Account::destroy($id);
             return response()->json([
                 'type'      => 'success',
