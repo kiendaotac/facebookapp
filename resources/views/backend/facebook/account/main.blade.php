@@ -304,7 +304,7 @@
                     {   data    :   'oldpass'   },
                     {   data    :   'newpass'   },
                     {   data    :   'typevia'   },
-                    {   data    :   '2fa'   },
+                    {   data    :   'twofa'   },
                     {   data    :   'email'   },
                     {   data    :   'emailpass'   },
                     {   data    :   'ads'   },

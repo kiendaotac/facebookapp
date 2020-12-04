@@ -32,7 +32,7 @@
                         </div>
                         <div class="form-group col-sm-6">
                             <label>2FA</label>
-                            <input type="text" placeholder="2FA" name="2fa" class="form-control"
+                            <input type="text" placeholder="2FA" name="twofa" class="form-control"
                                    autocomplete="off">
                         </div>
                         <div class="form-group col-lg-6">

