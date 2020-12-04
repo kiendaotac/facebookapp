@@ -245,9 +245,9 @@
                         }
                     },
                     {
-                        data    :   'ads',
+                        data    :   'cookie',
                         className: 'text-center',
-                        render: function (data, type, row, meta) {
+                       /* render: function (data, type, row, meta) {
                             let label;
                             switch (parseInt(data)) {
                                 case 1: label = `<span class="label label-primary">Không khóa</span>`; break;
@@ -255,7 +255,7 @@
                                 default: label = `<span class="label label-default">Không xác định</span>`
                             }
                             return label;
-                        }
+                        }*/
                     },
                     {   data    :   'comment'   },
                     {

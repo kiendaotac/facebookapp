@@ -89,7 +89,11 @@ class WorkController extends Controller
             $fileID = $request->id;
             $uid = Account::where('user_id', Auth::id())->where('id', $fileID)->where('status',1)->firstOrFail()->uid;
             $path = "data/$uid".".html";
-            return response()->download(storage_path("app/public/".$path));
+            $exists = Storage::disk('local')->exists("public/data/$uid.html");
+            if ($exists){
+                return response()->download(storage_path("app/public/".$path));
+            }
+            abort(404);
         }
         if ($request->ajax()) {
             if ($id === 'getDatatable'){

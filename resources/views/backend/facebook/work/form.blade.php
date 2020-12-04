@@ -27,11 +27,8 @@
                             </select>
                         </div>
                         <div class="form-group col-sm-6">
-                            <label for="ads">Trạng thái ADS</label>
-                            <select name="ads" id="ads" class="form-control">
-                                <option value="1">Không khóa</option>
-                                <option value="0">Khóa</option>
-                            </select>
+                            <label for="cookie">Cookie</label>
+                            <input type="text" class="form-control" name="cookie" id="cookie">
                         </div>
                         <div class="form-group col-sm-6">
                             <label>2FA</label>

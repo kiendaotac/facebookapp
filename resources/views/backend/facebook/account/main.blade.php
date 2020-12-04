@@ -241,12 +241,12 @@
                 // select: true,
                 bSort: false,
                 bInfo: true,
-                bLengthChange: false,
+                bLengthChange: true,
                 processing: true,
                 serverSide: true,
                 searching: true,
                 paging: true,
-                pageLength: 15,
+                // pageLength: 15,
                 responsive: true,
                 buttons: [
                     {
@@ -273,7 +273,8 @@
                             d.created_at = $('input[name=created_at]').val();
                         }
                     }),
-                dom: '<"row"<"col-sm-12 add-select-role">><"row"<"col-sm-6"iB><"col-sm-6"f>>rtp',
+                dom: '<"row"<"col-sm-12 add-select-role">><"row"<"col-sm-6"<"col-sm-12"l><"col-sm-12"iB>><"col-sm-6"f>>rtp',
+                // dom: 'Blfrtip',
                 language: {
                     'url'   :   '{{ asset(__('datatable.language')) }}'
                 },
@@ -307,7 +308,15 @@
                     {   data    :   'email'   },
                     {   data    :   'emailpass'   },
                     {   data    :   'ads'   },
-                    {   data    :   'user.display_name' ?  'user.display_name' : ''  },
+                    {
+                        data    :   'user',
+                        render  :   function (data, type, row, meta) {
+                            if(data){
+                                return data.display_name;
+                            }
+                            return '';
+                        }
+                    },
                     {
                         data    :   'status',
                         className: 'text-center',
