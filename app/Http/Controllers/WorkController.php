@@ -131,7 +131,7 @@ class WorkController extends Controller
         if ($request->ajax()) {
             $validator  =   Validator::make($request->all(), [
                 'typevia'   =>  'required|numeric',
-                '2fa'       =>  'nullable|string',
+                'twofa'       =>  'nullable|string',
                 'email'     =>  'required|email',
                 'status'    =>  'required|numeric|min:2'
             ]);
@@ -147,7 +147,7 @@ class WorkController extends Controller
                 ->where('id', $id)
                 ->update([
                     'typevia'   =>  request('typevia'),
-                    '2fa'       =>  request('2fa'),
+                    'twofa'     =>  request('twofa'),
                     'email'     =>  request('email'),
                     'status'    =>  request('status')
                 ]);
