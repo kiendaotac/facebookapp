@@ -332,8 +332,10 @@
     var channel = pusher.subscribe('facebook-message');
     channel.bind('facebook-message-event', function(data) {
         if (data.message) {
-            let alert = alert(`Có thông báo mới\n${data.message}`);
+            let alert = confirm(`Có thông báo mới\n${data.message}`);
             if(alert){
+                location.reload();
+            } else {
                 location.reload();
             }
         }
