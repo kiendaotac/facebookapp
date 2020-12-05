@@ -77,7 +77,7 @@
             border-radius: 0 .25rem .25rem 0;
         }
 
-        input[type="file"] {
+        input[type="file" i] {
             appearance: initial;
             background-color: initial;
             cursor: default;
@@ -105,6 +105,7 @@
             appearance: textfield;
             background-color: -internal-light-dark(rgb(255, 255, 255), rgb(59, 59, 59));
             -webkit-rtl-ordering: logical;
+            cursor: text;
             margin: 0em;
             font: 400 13.3333px Arial;
             padding: 1px 2px;
@@ -113,11 +114,32 @@
             border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
             border-image: initial;
         }
-        input{
+        .input-group {
+            position: relative;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            -ms-flex-align: stretch;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .text-primary {
+            color: #1ab394;
             cursor: pointer;
         }
-        .dt-checkboxes {
+
+        /*input, .copy-nick {
             cursor: pointer;
+        }*/
+
+        .input-group>.custom-file, .input-group>.custom-select, .input-group>.form-control, .input-group>.form-control-plaintext {
+            position: relative;
+            -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
+            width: 1%;
+            margin-bottom: 0;
         }
 
     </style>
@@ -228,15 +250,18 @@
             </div>
         </div>
     </div>
+@include('backend.facebook.account.form')
 @endsection
-
 @section('script')
     <script src="js/plugins/dataTables/datatables.min.js"></script>
     <script src="js/plugins/dataTables/dataTables.checkboxes.min.js"></script>
+    <!-- Clipboard -->
+    <script src="js/plugins/clipboard/clipboard.min.js"></script>
     <!-- Page-Level Scripts -->
     <script>
         let mainUrl = '{{$currentFunction->route}}';
         $(document).ready(function(){
+            new Clipboard('.btn-copy');
             let Table = $('.dataTables').DataTable({
                 // select: true,
                 bSort: false,
@@ -257,6 +282,15 @@
                             deleteMultipleRows(rowsSelected.toArray())
                         },
                         className: 'btn btn-danger'
+                    },
+                    {
+                        text: 'Download selected',
+                        action: function ( e, dt, node, config ) {
+                            let rowsSelected = dt.column(0).checkboxes.selected();
+                            // console.log(rowsSelected.toArray())
+                            downloadMultipleRows(rowsSelected.toArray())
+                        },
+                        className: 'btn btn-warning'
                     }
                 ],
                 // ajax: mainUrl + '/getDatatable',
@@ -338,11 +372,39 @@
                         data    :   'id',
                         className: 'text-center',
                         render  :   function (data, type, row, meta) {
-                            let button  =   '<button name="btn-delete" class="btn btn-remove btn-danger btn-flat btn-xs" title="Xóa" data-id='+data+'><i class="fa fa-remove"></i></button>';
+                            let button  =   '<button name="btn-edit" class="btn btn-primary btn-flat btn-xs" title="Edit"><i class="fa fa-edit" ></i></button > <button name="btn-delete" class="btn btn-remove btn-danger btn-flat btn-xs" title="Xóa" data-id='+data+'><i class="fa fa-remove"></i></button>';
                             return button;
                         }
                     }
                 ]
+            });
+
+            $(document).on('click', 'button[name=btn-edit]', function () {
+                let row = $(this).parents('tr');
+                let data = Table.row(row).data();
+                $.each(data, function (index, item) {
+                    $('[name='+index+']').val(item);
+                });
+                $('#modal-edit-account').modal('show')
+            })
+
+            /* Update account */
+            $('button[name=update-account]').on('click', function () {
+                let data = $('form[name=form-edit-account]').serialize(),
+                    id      =   $('input[name=id]').val(),
+                    type    =   'PUT',
+                    url     =   mainUrl + '/' + id;
+                $.ajax(url,{
+                    type    :   type,
+                    data    :   data,
+                    success :   function (respon) {
+                        notification(respon.type, respon.title, respon.content);
+                        if(respon.type === 'success'){
+                            Table.ajax.reload();
+                            $('#modal-edit-account').modal('hide');
+                        }
+                    }
+                })
             });
 
             $(document).on('click', 'button[name=btn-upload]', function () {
@@ -445,6 +507,32 @@
                                 }
                             }
                         })
+                    }
+                });
+            }
+
+            /**
+             * Download multiple account
+             *
+             */
+            function downloadMultipleRows(rowsSelected) {
+                let id  = 'downloadMultipleRows'
+                let url =   mainUrl + '/' + id;
+                swal({
+                    title: "Bạn có muốn download các account này không???",
+                    text: "",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "OK",
+                    cancelButtonText: "Không",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                }, function (config) {
+                    if (config){
+                        let parameter = $.param({rows:rowsSelected});
+                        let url = mainUrl + `/${id}?${parameter}`;
+                        window.open(url)
                     }
                 });
             }

@@ -142,7 +142,7 @@ table.dataTables-users {
             data    :   'isOnline',
             render  : function (data, type, row, meta) {
                 let onlineLabel = `<span class="label label-primary">Online</span>`;
-                let offlineLabel = `<span class="label label-primary">Online</span>`;
+                let offlineLabel = `<span class="label label-default">Offline</span>`;
                 return data ? onlineLabel : offlineLabel;
             }
         },

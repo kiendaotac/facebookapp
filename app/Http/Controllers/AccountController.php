@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Account;
+use App\Events\AccountAvailabeEvent;
+use App\Events\AccountSuccessEvent;
 use App\Functions;
 use App\Role;
+use App\Setting;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AccountController extends Controller
@@ -156,6 +160,35 @@ class AccountController extends Controller
             return response()->make($content, 200, $headers);
 
         }
+
+        if ($id === 'downloadMultipleRows'){
+            $rows = $request->rows;
+            if (empty($rows)){
+                abort(404);
+            }
+            $accounts = Account::whereIn('id', $rows)->with('User')->get();
+            $content = "";
+            foreach ($accounts as $account){
+                $uid = $account->uid;
+                $oldpass = $account->oldpass;
+                $newpass = $account->newpass;
+                $email = $account->email;
+                $useragent = $account->useragent;
+                $twofa = $account->twofa;
+                $cookie = $account->cookie;
+                $user = $account->User ? $account->User->display_name : '';
+                $content .= "$uid|$oldpass|$newpass|$email|$twofa|$useragent|$cookie|$user\n";
+            }
+            $fileName = "backup".date("Y-m-d-H-i-s").".txt";
+            $headers = [
+                'Content-type' => 'text/plain',
+                'Content-Disposition' => sprintf('attachment; filename="%s"', $fileName),
+                'Content-Length' => strlen($content)
+            ];
+            // make a response, with the content, a 200 response code and the headers
+            return response()->make($content, 200, $headers);
+
+        }
         if ($request->ajax()) {
             if ($id === 'getDatatable'){
                 $status = $request->status;
@@ -205,7 +238,39 @@ class AccountController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if ($request->ajax()) {
+            $validator  =   Validator::make($request->all(), [
+                'typevia'   =>  'required|numeric',
+                'twofa'       =>  'nullable|string',
+                'email'     =>  'required|email',
+                'status'    =>  'required|numeric|min:2'
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'type'    => 'error',
+                    'title'   => 'Lỗi!',
+                    'content' => $validator->errors()->all()]);
+            }
+
+            Account::where('id', $id)
+                ->update([
+                    'typevia'   =>  request('typevia'),
+                    'newpass'   =>  request('newpass'),
+                    'twofa'     =>  request('twofa'),
+                    'email'     =>  request('email'),
+                    'status'    =>  request('status'),
+                    'cookie'    => request('cookie')
+                ]);
+            return response()->json([
+                'type'      => 'success',
+                'title'     => 'Thành công!',
+                'content'   => 'Update Account thành công !!'
+            ]);
+        }
+        return response()->json([
+            'type'      => 'error',
+            'title'     => 'Lỗi!',
+            'content'   => 'Không phải ajax request']);
     }
 
     /**

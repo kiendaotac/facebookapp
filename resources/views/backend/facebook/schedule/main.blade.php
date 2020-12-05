@@ -5,6 +5,7 @@
 
 @section('style')
     <link href="css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+    <link href="css/plugins/dataTables/dataTables.checkboxes.css" rel="stylesheet">
     <style>
         table.dataTables > thead > tr > th.stt {
             width: 15px;
@@ -153,11 +154,19 @@
         </div>
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
-        <div class="row" style="margin-bottom: 10px">
-            <div class="col-lg-12">
-                <span class="input-group-append">
-                    <button type="button" class="btn btn-primary" name="btn-refresh">Lấy Acc</button>
-                </span>
+        <div class="row">
+            <div class="col-md-3">
+                <label for="filter-user">Lọc theo user</label>
+                <select name="filter-user" id="filter-user" class="form-control filter">
+                    <option value="0">Tất cả user</option>
+                    @foreach($users as $user)
+                        <option value="{{ $user->id }}">{{ $user->display_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="filter-date">Lọc theo ngày</label>
+                <input type="date" id="filter-date" name="filter-date" class="form-control filter">
             </div>
         </div>
         <div class="row">
@@ -169,17 +178,11 @@
                                 <thead>
                                 <tr>
                                     <th class="stt">STT</th>
-                                    <th class="uid">Nick</th>
-                                    <th class="new-pass">Pass Mới</th>
-                                    <th class="typevia">Loại via</th>
-                                    <th class="2fa">2FA</th>
-                                    <th class="email">Email</th>
-{{--                                    <th class="email">PassEmail</th>--}}
-                                    <th class="download">Data backup</th>
-                                    <th class="ads">ADS</th>
-                                    <th class="comment">Ghi chú</th>
-                                    <th class="status">Trạng thái</th>
-                                    <th class="action">Thao Tác</th>
+                                    <th class="uid">User</th>
+                                    <th class="old-pass">Ngày</th>
+                                    <th class="new-pass">Giờ làm việc</th>
+                                    {{--<th class="status">Status</th>
+                                    <th class="action">Thao Tác</th>--}}
                                 </tr>
                                 </thead>
                             </table>
@@ -189,28 +192,27 @@
             </div>
         </div>
     </div>
-    <!-- Modal add new role -->
-    @include('backend.facebook.work.form')
+@include('backend.facebook.schedule.form')
 @endsection
-
 @section('script')
     <script src="js/plugins/dataTables/datatables.min.js"></script>
+    {{--<script src="js/plugins/dataTables/dataTables.checkboxes.min.js"></script>
     <!-- Clipboard -->
     <script src="js/plugins/clipboard/clipboard.min.js"></script>
-    <!-- Page-Level Scripts -->
+    <!-- Page-Level Scripts -->--}}
     <script>
         let mainUrl = '{{$currentFunction->route}}';
         $(document).ready(function(){
             let Table = $('.dataTables').DataTable({
-                select: true,
+                // select: true,
                 bSort: false,
                 bInfo: true,
-                bLengthChange: false,
+                bLengthChange: true,
                 processing: true,
                 serverSide: true,
                 searching: true,
                 paging: true,
-                pageLength: 15,
+                // pageLength: 15,
                 responsive: true,
                 // ajax: mainUrl + '/getDatatable',
                 ajax: $.extend({
@@ -220,10 +222,12 @@
                     },
                     {
                         data: function (d) {
-                            d.role = $('select[name=role]').val();
+                            d.user = $('select[name=filter-user]').val();
+                            d.date = $('input[name=filter-date]').val();
                         }
                     }),
-                dom: '<"row"<"col-sm-12 add-select-role">><"row"<"col-sm-6"i><"col-sm-6"f>>rtp',
+                dom: '<"row"<"col-sm-12 add-select-role">><"row"<"col-sm-6"<"col-sm-12"l><"col-sm-12"i>><"col-sm-6"f>>rtp',
+                // dom: 'Blfrtip',
                 language: {
                     'url'   :   '{{ asset(__('datatable.language')) }}'
                 },
@@ -235,88 +239,20 @@
                             return meta.row +1;
                         }
                     },
-                    {
-                        data    :   'uid',
-                        className: 'text-center',
-                        render  :   function (data, type, row, meta) {
-                            return `<i class="fa fa-copy fa-2x copy-nick"></i>`
-                        }
-                    },
-                    {   data    :   'newpass'   },
-                    {   data    :   'typevia'   },
-                    {   data    :   'twofa'   },
-                    {   data    :   'email'   },
-                    // {   data    :   'emailpass'   },
-                    {
-                        data    :   'id',
-                        className: 'text-center',
-                        render: function (data, type, row, meta) {
-                            return `<i class="fa fa-download fa-2x text-primary"></i>`;
-                        }
-                    },
-                    {
-                        data    :   'cookie',
-                        className: 'text-center',
-                       /* render: function (data, type, row, meta) {
-                            let label;
-                            switch (parseInt(data)) {
-                                case 1: label = `<span class="label label-primary">Không khóa</span>`; break;
-                                case 0: label = `<span class="label label-danger">Khóa</span>`; break;
-                                default: label = `<span class="label label-default">Không xác định</span>`
-                            }
-                            return label;
-                        }*/
-                    },
-                    {   data    :   'comment'   },
-                    {
-                        data    :   'status',
-                        className: 'text-center',
-                        render: function (data, type, row, meta) {
-                            let button;
-                            switch (parseInt(data)) {
-                                case 2: button = `<span class="label label-primary">Hoàn thành</span>`; break;
-                                case 3: button = `<span class="label label-warning-light">Không có ảnh</span>`; break;
-                                case 4: button = `<span class="label label-warning">Hai lần sai ảnh</span>`; break;
-                                case 5: button = `<span class="label label-danger">Sai password</span>`; break;
-                                case 6: button = `<span class="label label-warning">2FA</span>`; break;
-                                case 7: button = `<span class="label label-warning">CP sau hoàn thành</span>`; break;
-                                default: button = `<span class="label label-default">Chưa thao tác</span>`;
-                            }
-                            return button;
-                        }
-                    },
-                    {
-                        data    :   'id',
-                        className: 'text-center',
-                        render  :   function (data, type, row, meta) {
-                            let button  =   '<button name="btn-edit" class="btn btn-edit btn-primary btn-flat btn-xs" title="Edit" data-id='+data+'><i class="fa fa-edit"></i></button>';
-                            return button;
-                        }
-                    }
+                    {   data    :   'user.display_name'   },
+                    {   data    :   'date'   },
+                    {   data    :   'time'   },
                 ]
             });
 
-            $(document).on('click', 'button[name=btn-refresh]', function () {
-                $.ajax(mainUrl, {
-                    type: 'post',
-                    success: function (response) {
-                        notification(response.type, response.title, response.content);
-                        if (response.type === 'success'){
-                            Table.ajax.reload();
-                        }
-                    }
-                })
-            })
-
-            /* Edit function */
             $(document).on('click', 'button[name=btn-edit]', function () {
-                // let data = $(this).data('data');
-                let data = Table.row($(this).parents('tr')).data()
+                let row = $(this).parents('tr');
+                let data = Table.row(row).data();
                 $.each(data, function (index, item) {
                     $('[name='+index+']').val(item);
                 });
-                $('#modal-add-user').modal({backdrop: 'static', keyboard: false, show : true});
-            });
+                $('#modal-edit-account').modal('show')
+            })
 
             /* Update account */
             $('button[name=update-account]').on('click', function () {
@@ -331,53 +267,146 @@
                         notification(respon.type, respon.title, respon.content);
                         if(respon.type === 'success'){
                             Table.ajax.reload();
-                            $('#modal-add-user').modal('hide');
+                            $('#modal-edit-account').modal('hide');
                         }
                     }
                 })
             });
 
-            /**
-             * Copy to clipboard
-             */
-
-            new Clipboard('.btn-copy');
-
-           /* $(document).on('click', 'button.btn-copy', function () {
-                let input = $(this).parents('.input-group').find("input");
-                let copyText = input.val();
-                copyToClipboard(copyText)
-            })*/
-
-            $(document).on('click', '.copy-nick', function () {
-                let data = Table.row($(this).parents('tr')).data();
-                let string = `${data.uid}|${data.oldpass}|${data.useragent}`
-                copyToClipboard(string)
+            $(document).on('click', 'button[name=btn-upload]', function () {
+                let formData = new FormData();
+                let file = $('input#file')[0].files[0];
+                formData.append('file',file)
+                formData.append('stream', $('select[name=stream]').val())
+                $.ajax(mainUrl, {
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    type: 'post',
+                    data: formData,
+                    success: function (response) {
+                        notification(response.type, response.title, response.content);
+                        if (response.type === 'success'){
+                            Table.ajax.reload();
+                            $('.custom-file-input').val('');
+                        }
+                    }
+                })
             })
 
-            const copyToClipboard = str => {
-                const el = document.createElement('textarea');
-                el.value = str;
-                el.setAttribute('readonly', '');
-                el.style.position = 'absolute';
-                el.style.left = '-9999px';
-                document.body.appendChild(el);
-                el.select();
-                document.execCommand('copy');
-                document.body.removeChild(el);
-            };
+            /* Delete function */
+            $(document).on('click', 'button[name=btn-delete]', function () {
+                let id  = $(this).data('id');
+                let url =   mainUrl + '/' + id;
+                swal({
+                    title: "Bạn có muốn xóa chức năng này không??",
+                    text: "Khi xóa chức năng sẽ không thể khôi phục lại",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "OK",
+                    cancelButtonText: "Không",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                }, function (config) {
+                    if (config){
+                        $.ajax(url,{
+                            type    :   'DELETE',
+                            data    :   {
+                                _token  :   '{{csrf_token()}}'
+                            },
+                            success :   function (respon) {
+                                notification(respon.type, respon.title, respon.content);
+                                if(respon.type === 'success'){
+                                    Table.ajax.reload();
+                                }
+                            }
+                        })
+                    }
+                });
+            });
 
-            function copy(copyText){
-                console.log(copyText.select())
-                copyText.select();
-                document.execCommand("copy");
-            }
+            $(document).on('change', '.filter', function () {
+                Table.ajax.reload();
+            })
 
-            $(document).on('click', '.fa-download', function () {
-                let id = Table.row($(this).parents('tr')).data();
-                let url = `${mainUrl}/download?id=${id.id}`;
+            /**
+             * Download file
+             */
+            $(document).on('click', 'button[name=btn-download]', function () {
+                let status = $('select[name=filter-status]').val();
+                let user = $('select[name=filter-user]').val();
+                let stream = $('select[name=filter-stream]').val();
+                let url = mainUrl + `/download?user=${user}&status=${status}&stream=${stream}`;
                 window.open(url)
             })
+
+            /**
+             * Delete multiple account
+             *
+             */
+            function deleteMultipleRows(rowsSelected) {
+                let id  = 'deleteMultipleRows'
+                let url =   mainUrl + '/' + id;
+                swal({
+                    title: "Bạn có muốn xóa các account này không??",
+                    text: "Khi xóa chức năng sẽ không thể khôi phục lại",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "OK",
+                    cancelButtonText: "Không",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                }, function (config) {
+                    if (config){
+                        $.ajax(url,{
+                            type    :   'DELETE',
+                            data    :   {
+                                _token  :   '{{csrf_token()}}',
+                                rows    :   rowsSelected
+                            },
+                            success :   function (respon) {
+                                notification(respon.type, respon.title, respon.content);
+                                if(respon.type === 'success'){
+                                    Table.ajax.reload();
+                                }
+                            }
+                        })
+                    }
+                });
+            }
+
+            /**
+             * Download multiple account
+             *
+             */
+            function downloadMultipleRows(rowsSelected) {
+                let id  = 'downloadMultipleRows'
+                let url =   mainUrl + '/' + id;
+                swal({
+                    title: "Bạn có muốn download các account này không???",
+                    text: "",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "OK",
+                    cancelButtonText: "Không",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                }, function (config) {
+                    if (config){
+                        let parameter = $.param({rows:rowsSelected});
+                        let url = mainUrl + `/${id}?${parameter}`;
+                        window.open(url)
+                    }
+                });
+            }
+        });
+
+        $('.custom-file-input').on('change', function() {
+            let fileName = $(this).val().split('\\').pop();
+            $(this).next('.custom-file-label').addClass("selected").html(fileName);
         });
     </script>
 @endsection

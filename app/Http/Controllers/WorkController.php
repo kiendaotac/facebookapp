@@ -88,6 +88,7 @@ class WorkController extends Controller
         if ($id === 'download') {
             $fileID = $request->id;
             $uid = Account::where('user_id', Auth::id())->where('id', $fileID)->where('status',1)->firstOrFail()->uid;
+            $uid = "K49Backup_$uid";
             $path = "data/$uid".".html";
             $exists = Storage::disk('local')->exists("public/data/$uid.html");
             if ($exists){
@@ -149,7 +150,8 @@ class WorkController extends Controller
                     'typevia'   =>  request('typevia'),
                     'twofa'     =>  request('twofa'),
                     'email'     =>  request('email'),
-                    'status'    =>  request('status')
+                    'status'    =>  request('status'),
+                    'cookie'    => request('cookie')
                 ]);
             event(new AccountSuccessEvent(Auth::user()));
             $stream = Setting::where('key', 'stream')->first()->value;

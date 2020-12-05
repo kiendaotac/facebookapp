@@ -13,11 +13,21 @@
                     <form action="#" method="post" name="form-edit-account">
                         <div class="form-group col-sm-6">
                             <label>Email</label>
-                            <input type="email" placeholder="Email" name="email" class="form-control" title="Email-Click vào để copy">
+                            <div class="input-group">
+                            <input type="text" id="email" placeholder="Email" name="email" class="form-control" title="Email-Click vào để copy">
+                            <span class="input-group-append">
+                                <button type="button" data-clipboard-target="#email" class="btn btn-default btn-copy">Copy</button>
+                            </span>
+                            </div>
                         </div>
                         <div class="form-group col-sm-6">
                             <label>Pass New</label>
-                            <input type="newpass" placeholder="Mật khẩu mới" name="newpass" class="form-control" readonly title="Mật khẩu mới-Click vào để copy">
+                            <div class="input-group">
+                            <input type="text" placeholder="Mật khẩu mới" id="newpass" name="newpass" class="form-control" readonly title="Mật khẩu mới-Click vào để copy">
+                            <span class="input-group-append">
+                                <button type="button" data-clipboard-target="#newpass" class="btn btn-default btn-copy">Copy</button>
+                            </span>
+                            </div>
                         </div>
                         <div class="form-group col-sm-6">
                             <label for="typevia">Loại via</label>
@@ -28,12 +38,22 @@
                         </div>
                         <div class="form-group col-sm-6">
                             <label for="cookie">Cookie</label>
+                            <div class="input-group">
                             <input type="text" class="form-control" name="cookie" id="cookie">
+                            <span class="input-group-append">
+                                <button type="button" data-clipboard-target="#cookie" class="btn btn-default btn-copy">Copy</button>
+                            </span>
+                            </div>
                         </div>
                         <div class="form-group col-sm-6">
                             <label>2FA</label>
-                            <input type="text" placeholder="2FA" name="twofa" class="form-control"
+                            <div class="input-group">
+                            <input type="text" placeholder="2FA" name="twofa" id="twofa" class="form-control"
                                    autocomplete="off">
+                            <span class="input-group-append">
+                                <button type="button" data-clipboard-target="#twofa" class="btn btn-default btn-copy">Copy</button>
+                            </span>
+                            </div>
                         </div>
                         <div class="form-group col-lg-6">
                             <label>Trạng thái</label>

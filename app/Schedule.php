@@ -11,4 +11,8 @@ class Schedule extends Model
     protected $casts = [
         'time'  =>  'array'
     ];
+
+    public function User(){
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }
