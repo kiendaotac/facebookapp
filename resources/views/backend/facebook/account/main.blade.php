@@ -313,8 +313,8 @@
                     'url'   :   '{{ asset(__('datatable.language')) }}'
                 },
                 "columnDefs": [
-                    {"defaultContent": '', "targets": [9]},
-                    {"searchable": '', "targets": [9]},
+                    {"defaultContent": '', "targets": [10]},
+                    {"searchable": '', "targets": [10]},
                     {
                         'targets': 0,
                         'checkboxes': {
@@ -341,7 +341,7 @@
                     {   data    :   'twofa'   },
                     {   data    :   'email'   },
                     {   data    :   'emailpass'   },
-                    {   data    :   'ads'   },
+                    {   data    :   'cookie'   },
                     {
                         data    :   'user',
                         render  :   function (data, type, row, meta) {
