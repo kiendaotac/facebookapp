@@ -323,7 +323,7 @@
 <script>
 
     // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = true;
+    //Pusher.logToConsole = true;
 
     var pusher = new Pusher('48597400c637ee2013b1', {
         cluster: 'ap3'
@@ -331,14 +331,14 @@
 
     var channel = pusher.subscribe('facebook-message');
     channel.bind('facebook-message-event', function(data) {
-        if (data.message) {
+        // if (data.message) {
             let alert = confirm(`Có thông báo mới\n${data.message}`);
             if(alert){
                 location.reload();
             } else {
                 location.reload();
             }
-        }
+        // }
     });
     //user.1
     let userChanel = 'user.{{ \Illuminate\Support\Facades\Auth::id() }}'
