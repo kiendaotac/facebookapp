@@ -62,7 +62,10 @@ class WorkController extends Controller
             }
             $limit = Setting::where('key', 'account')->first()->value;
             $stream = Setting::where('key', 'stream')->first()->value;
-            Account::where('status', 1)->where('stream',$stream)->orderBy('user_id', 'DESC')->limit($limit)->update(['user_id'=>Auth::id()]);
+            $already = Account::where('status', 1)->where('stream',$stream)->where('user_id', Auth::id())->count();
+            if ($already < $limit){
+                Account::where('status', 1)->where('stream',$stream)->whereNull('user_id')->orderBy('user_id', 'DESC')->limit($limit-$already)->update(['user_id'=>Auth::id()]);
+            }
             return response()->json([
                 'type'      => 'success',
                 'title'     => 'Thành công!',

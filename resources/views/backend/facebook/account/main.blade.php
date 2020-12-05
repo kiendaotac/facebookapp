@@ -237,7 +237,7 @@
                                     <th class="2fa">2FA</th>
                                     <th class="email">Email</th>
                                     <th class="email">PassEmail</th>
-                                    <th class="ads">ADS</th>
+                                    <th class="ads">Cookie</th>
                                     <th class="ads">User</th>
                                     <th class="status">Status</th>
                                     <th class="action">Thao Tác</th>
