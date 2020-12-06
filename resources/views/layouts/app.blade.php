@@ -345,6 +345,7 @@
     let privateChanel = pusher.subscribe(userChanel);
     privateChanel.bind('user-account-event', function (data) {
         $('#account').html(data.account)
+        $('#account_checkpoint').html(data.account_checkpoint)
     });
     let availableAccountChanel = pusher.subscribe('available-account');
     availableAccountChanel.bind('available-account-event', function (data) {

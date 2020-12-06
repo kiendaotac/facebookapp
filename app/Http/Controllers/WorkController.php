@@ -154,11 +154,12 @@ class WorkController extends Controller
                     'twofa'     =>  request('twofa'),
                     'email'     =>  request('email'),
                     'status'    =>  request('status'),
-                    'cookie'    => request('cookie')
+                    'cookie'    =>  request('cookie'),
+                    'comment'   =>  request('comment')
                 ]);
             event(new AccountSuccessEvent(Auth::user()));
             $stream = Setting::where('key', 'stream')->first()->value;
-            $availableAccount = Account::where('status', 1)->where('stream', $stream)->count();
+            $availableAccount = Account::where('status', 1)->where('stream', $stream)->whereNull('user_id')->count();
             event(new AccountAvailabeEvent($availableAccount));
 
             return response()->json([

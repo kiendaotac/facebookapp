@@ -15,8 +15,11 @@
                 @endphp
                 Số account còn trên hệ thống: <span id="account-available" class="red">{{ \App\Account::where('status', 1)->where('stream', $stream)->count() }}</span>
             </li>
-            <li style="font-size: 18px">
+            <li style="font-size: 18px;margin-right: 15px;">
                 Số account hoàn thành: <span id="account" class="red">{{ \Illuminate\Support\Facades\Auth::user()->Account()->where('status', 2)->count() }}</span>
+            </li>
+            <li style="font-size: 18px">
+                Số account bị checkpoint: <span id="account_checkpoint" class="red">{{ \Illuminate\Support\Facades\Auth::user()->Account()->where('status', 7)->count() }}</span>
             </li>
             
             {{--<li class="dropdown notify">

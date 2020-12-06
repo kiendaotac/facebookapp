@@ -241,9 +241,9 @@ class AccountController extends Controller
         if ($request->ajax()) {
             $validator  =   Validator::make($request->all(), [
                 'typevia'   =>  'required|numeric',
-                'twofa'       =>  'nullable|string',
+                'twofa'     =>  'nullable|string',
                 'email'     =>  'required|email',
-                'status'    =>  'required|numeric|min:2'
+                'status'    =>  'required|numeric|min:1'
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -252,15 +252,21 @@ class AccountController extends Controller
                     'content' => $validator->errors()->all()]);
             }
 
+            $dataUpdate = [
+                'typevia'   =>  request('typevia'),
+                'newpass'   =>  request('newpass'),
+                'twofa'     =>  request('twofa'),
+                'email'     =>  request('email'),
+                'status'    =>  request('status'),
+                'cookie'    =>  request('cookie'),
+                'comment'   =>  request('comment')
+            ];
+            if (request('status') == 1){
+                $dataUpdate['user_id'] = null;
+            }
+
             Account::where('id', $id)
-                ->update([
-                    'typevia'   =>  request('typevia'),
-                    'newpass'   =>  request('newpass'),
-                    'twofa'     =>  request('twofa'),
-                    'email'     =>  request('email'),
-                    'status'    =>  request('status'),
-                    'cookie'    => request('cookie')
-                ]);
+                ->update($dataUpdate);
             return response()->json([
                 'type'      => 'success',
                 'title'     => 'Thành công!',

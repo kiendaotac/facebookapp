@@ -43,7 +43,10 @@ class AccountSuccessEvent implements ShouldBroadcast
     }
 
     public function broadcastWith(){
-        return ['account'=>$this->user->Account()->where('status',2)->count()];
+        return [
+            'account'=>$this->user->Account()->where('status',2)->count(),
+            'account_checkpoint'=>$this->user->Account()->where('status', 7)->count()
+        ];
     }
 
 
