@@ -8,12 +8,28 @@
                 </div>
             </form>
         </div>
+        @role('admin')
+        <ul class="nav navbar-top-links navbar-right">
+            <li style="font-size: 18px; margin-right: 15px; color: #0a6aa1">
+                Tổng số account đã hoàn thành: <span id="total-complete" class="red">{{ \App\Account::where('status', 2)->count() }}</span>
+            </li>
+            <li style="font-size: 18px;margin-right: 15px;color: #0a6aa1">
+                Tông số account bị Checkpoint: <span id="total-checkpoint" class="red">{{ \App\Account::where('status',7)->count() }}</span>
+            </li>
+            <li style="font-size: 18px;color: #0a6aa1">
+                Số user Online: <span id="total-user-online" class="red">{{ \App\User::all()->where('isOnline',true)->count() }}</span>
+            </li>
+            <li>
+
+            </li>
+        </ul>
+        @endrole
         <ul class="nav navbar-top-links navbar-right">
             <li style="font-size: 18px; margin-right: 15px;">
                 @php
                     $stream = \App\Setting::where('key', 'stream')->first()->value;
                 @endphp
-                Số account còn trên hệ thống: <span id="account-available" class="red">{{ \App\Account::where('status', 1)->where('stream', $stream)->count() }}</span>
+                Số account còn trên hệ thống: <span id="account_available" class="red">{{ \App\Account::where('status', 1)->where('stream', $stream)->whereNull('user_id')->count() }}</span>
             </li>
             <li style="font-size: 18px;margin-right: 15px;">
                 Số account hoàn thành: <span id="account" class="red">{{ \Illuminate\Support\Facades\Auth::user()->Account()->where('status', 2)->count() }}</span>
@@ -21,27 +37,11 @@
             <li style="font-size: 18px">
                 Số account bị checkpoint: <span id="account_checkpoint" class="red">{{ \Illuminate\Support\Facades\Auth::user()->Account()->where('status', 7)->count() }}</span>
             </li>
-            
-            {{--<li class="dropdown notify">
-                <ul class="dropdown-menu dropdown-alerts box-notify">
-                </ul>
-                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                    <i class="fa fa-bell"></i> <span class="label label-primary number-notify"></span>
-                </a>
-                
-            </li>
-            <li><a href="http://hoctienganh.tnu.vn/huongdan_giaovien.pdf"><i class="fa fa-cloud-download" aria-hidden="true"></i> Tải hướng dẫn sử dụng</a></li>
---}}
             <li>
-                <a href="{!! asset('logout') !!}">
+                {{--<a href="{!! asset('logout') !!}">
                     <i class="fa fa-sign-out"></i> Đăng xuất
-                </a>
+                </a>--}}
             </li>
-            {{--<li>
-                <a class="right-sidebar-toggle">
-                    <i class="fa fa-tasks"></i>
-                </a>
-            </li>--}}
         </ul>
 
     </nav>

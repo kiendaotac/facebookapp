@@ -66,6 +66,8 @@ class WorkController extends Controller
             if ($already < $limit){
                 Account::where('status', 1)->where('stream',$stream)->whereNull('user_id')->orderBy('user_id', 'DESC')->limit($limit-$already)->update(['user_id'=>Auth::id()]);
             }
+            $available = Account::where('status',1)->where('stream', $stream)->whereNull('user_id')->count();
+            event(new AccountAvailabeEvent($available));
             return response()->json([
                 'type'      => 'success',
                 'title'     => 'Thành công!',

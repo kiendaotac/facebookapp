@@ -146,7 +146,7 @@
                         className:  'check',
                         render  :   function (data, type, row, meta) {
                             let checked =   '';
-                            if (data === '1'){
+                            if (data === 1){
                                 checked = 'checked';
                             }
                             return '<input type="checkbox" class="permission" data-permission="View" value="'+row.id+'"'+checked+'/>';
@@ -156,7 +156,7 @@
                         className:  'check',
                         render  :   function (data, type, row, meta) {
                             let checked =   '';
-                            if (data === '1'){
+                            if (data === 1){
                                 checked = 'checked';
                             }
                             return row.parent_id ? '<input type="checkbox" class="permission" data-permission="Add" value="'+row.id+'"'+checked+'/>' : null;
@@ -166,7 +166,7 @@
                         className:  'check',
                         render  :   function (data, type, row, meta) {
                             let checked =   '';
-                            if (data === '1'){
+                            if (data === 1){
                                 checked = 'checked';
                             }
                             return row.parent_id ? '<input type="checkbox" class="permission" data-permission="Edit" value="'+row.id+'"'+checked+'/>' : null;
@@ -176,7 +176,7 @@
                         className:  'check',
                         render  :   function (data, type, row, meta) {
                             let checked =   '';
-                            if (data === '1'){
+                            if (data === 1){
                                 checked = 'checked';
                             }
                             return row.parent_id ? '<input type="checkbox" class="permission" data-permission="Delete" value="'+row.id+'"'+checked+'/>' : null;

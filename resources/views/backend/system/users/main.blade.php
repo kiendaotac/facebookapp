@@ -92,7 +92,7 @@ table.dataTables-users {
         serverSide: true,
         searching: true,
         paging: true,
-        pageLength: 15,
+        pageLength: 200,
         responsive: true,
         ajax: mainUrl + '/getDatatable',
         dom: '<"row"<"col-sm-6"Bi><"col-sm-6"f>>rtp',

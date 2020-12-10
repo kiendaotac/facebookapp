@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Account;
 use App\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -44,8 +45,10 @@ class AccountSuccessEvent implements ShouldBroadcast
 
     public function broadcastWith(){
         return [
-            'account'=>$this->user->Account()->where('status',2)->count(),
-            'account_checkpoint'=>$this->user->Account()->where('status', 7)->count()
+            'account'                   =>  $this->user->Account()->where('status',2)->count(),
+            'account_checkpoint'        =>  $this->user->Account()->where('status', 7)->count(),
+            'total_account_complete'    =>  Account::where('status',2)->count(),
+            'total_account_checkpoint'  =>  Account::where('status',7)->count(),
         ];
     }
 

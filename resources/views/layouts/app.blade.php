@@ -323,7 +323,7 @@
 <script>
 
     // Enable pusher logging - don't include this in production
-    //Pusher.logToConsole = true;
+    Pusher.logToConsole = true;
 
     var pusher = new Pusher('48597400c637ee2013b1', {
         cluster: 'ap3'
@@ -346,10 +346,12 @@
     privateChanel.bind('user-account-event', function (data) {
         $('#account').html(data.account)
         $('#account_checkpoint').html(data.account_checkpoint)
+        $('#total-complete').html(data.total_account_complete)
+        $('#total-checkpoint').html(data.total_account_checkpoint)
     });
     let availableAccountChanel = pusher.subscribe('available-account');
     availableAccountChanel.bind('available-account-event', function (data) {
-        $('#account-available').html(data.accountAvailable)
+        $('#account_available').html(data.availableAccount)
     })
 </script>
 </body>

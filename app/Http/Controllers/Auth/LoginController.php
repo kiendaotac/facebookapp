@@ -44,4 +44,12 @@ class LoginController extends Controller
     {
         Auth::logoutOtherDevices($request->password);
     }
+
+    protected function validateLogin(Request $request)
+    {
+        $request->validate([
+            $this->username() => 'required|string|exists:users,'.$this->username().',state,1',
+            'password' => 'required|string',
+        ]);
+    }
 }
