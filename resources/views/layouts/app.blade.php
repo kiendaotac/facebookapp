@@ -105,7 +105,7 @@
                                 <h3>Chiều</h3>
                                 <div class="row">
                                 @for($i = 1; $i <= 12; $i++)
-                                    <div class="col-sm-6"><label> <input type="checkbox" name="times[]" value="{{ $i }}"> {{ $i }} giờ </label></div>
+                                    <div class="col-sm-6"><label> <input type="checkbox" name="times[]" value="{{ $i + 12 }}"> {{ $i }} giờ </label></div>
                                 @endfor
                                 </div>
                             </div>
