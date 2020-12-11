@@ -13,6 +13,6 @@ class Schedule extends Model
     ];
 
     public function User(){
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id')->withTrashed();
     }
 }
