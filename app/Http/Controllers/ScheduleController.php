@@ -63,6 +63,7 @@ class ScheduleController extends Controller
                 if (!empty($date)){
                     $schedules = $schedules->whereDate('date', $date);
                 }
+                $schedules = $schedules->latest();
                 return datatables($schedules)->make(true);
             }
         } else {
