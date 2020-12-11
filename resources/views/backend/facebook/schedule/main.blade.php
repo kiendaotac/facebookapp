@@ -212,7 +212,7 @@
                 serverSide: true,
                 searching: true,
                 paging: true,
-                // pageLength: 15,
+                pageLength: 200,
                 responsive: true,
                 // ajax: mainUrl + '/getDatatable',
                 ajax: $.extend({

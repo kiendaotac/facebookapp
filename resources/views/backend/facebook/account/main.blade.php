@@ -5,6 +5,7 @@
 
 @section('style')
     <link href="css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+    <link href="css/plugins/chosen/chosen.css" rel="stylesheet">
     <link href="css/plugins/dataTables/dataTables.checkboxes.css" rel="stylesheet">
     <style>
         table.dataTables > thead > tr > th.stt {
@@ -193,7 +194,7 @@
             </div>
             <div class="col-md-2">
                 <label for="filter-user">Lọc theo user</label>
-                <select name="filter-user" id="filter-user" class="form-control filter">
+                <select name="filter-user" id="filter-user" class="form-control filter chosen">
                     <option value="0">Tất cả user</option>
                     @foreach($users as $user)
                         <option value="{{ $user->id }}">{{ $user->display_name }}</option>
@@ -257,6 +258,9 @@
     <script src="js/plugins/dataTables/dataTables.checkboxes.min.js"></script>
     <!-- Clipboard -->
     <script src="js/plugins/clipboard/clipboard.min.js"></script>
+    <!-- Page-Level Scripts -->
+
+    <script src="js/plugins/chosen/chosen.jquery.js"></script>
     <!-- Page-Level Scripts -->
     <script>
         let mainUrl = '{{$currentFunction->route}}';
@@ -387,6 +391,8 @@
                 });
                 $('#modal-edit-account').modal('show')
             })
+
+            $('.chosen').chosen()
 
             /* Update account */
             $('button[name=update-account]').on('click', function () {
