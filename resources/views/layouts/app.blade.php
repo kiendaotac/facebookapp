@@ -228,34 +228,6 @@
                 }
             })
         })
-        {{--let user =  '{{ \Illuminate\Support\Facades\Auth::id() }}';--}}
-        {{--let fb_check    =   parseInt('{{ \App\StudentShift::count() }}');--}}
-        {{--let link    =   '{{ asset('course/1') }}';--}}
-        {{--if ((user == 8 || user == 5 ) && !fb_check){--}}
-            {{--let fb  = false;--}}
-            {{--let count = 0;--}}
-            {{--while (!fb && count < 3){--}}
-                {{--count++;--}}
-                {{--let foo = prompt('Bạn cần điền link facebook để tiếp tục <3');--}}
-                {{--let re = /(?:https?:\/\/)?(?:www\.)?(?:facebook|fb|m\.facebook)\.(?:com|me)\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]+)(?:\/)?/i;--}}
-                {{--fb = re.exec(foo);--}}
-                {{--if (fb){--}}
-                    {{--confirm('Thanks you!! Link facebook sẽ được kiểm chứng :v');--}}
-                    {{--fb_check = 1;--}}
-                    {{--$.ajax(link,{--}}
-                        {{--type    :   'PUT',--}}
-                        {{--data    :   {--}}
-                            {{--_token  :   '{{csrf_token()}}',--}}
-                            {{--fb      :   fb--}}
-                        {{--},--}}
-                        {{--success :   function (respon) {--}}
-                        {{--}--}}
-                    {{--})--}}
-                {{--} else {--}}
-                    {{--alert('Đây không phải link profile facebook. Hãy nhập lại.');--}}
-                {{--}--}}
-            {{--}--}}
-        {{--}--}}
         $('li.active').parent('ul').addClass('in').parent('li').addClass('active');
         $(document).ajaxComplete(function (event, xhr, settings) {
             if (xhr.status == 550) {
@@ -331,14 +303,21 @@
 
     var channel = pusher.subscribe('facebook-message');
     channel.bind('facebook-message-event', function(data) {
-        // if (data.message) {
-            let alert = confirm(`Có thông báo mới\n${data.message}`);
-            if(alert){
-                location.reload();
-            } else {
+        swal({
+            title: "Bạn có thông báo mới??",
+            text: data.message,
+            type: "warning",
+            showCancelButton: false,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "OK",
+            cancelButtonText: "Không",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        }, function (config) {
+            if (config){
                 location.reload();
             }
-        // }
+        });
     });
     //user.1
     let userChanel = 'user.{{ \Illuminate\Support\Facades\Auth::id() }}'

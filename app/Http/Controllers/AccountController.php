@@ -162,7 +162,7 @@ class AccountController extends Controller
         }
 
         if ($id === 'downloadMultipleRows'){
-            $rows = $request->rows;
+            $rows = $request->r;
             if (empty($rows)){
                 abort(404);
             }

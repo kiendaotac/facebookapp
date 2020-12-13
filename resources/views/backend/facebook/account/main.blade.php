@@ -536,7 +536,7 @@
                     closeOnCancel: true
                 }, function (config) {
                     if (config){
-                        let parameter = $.param({rows:rowsSelected});
+                        let parameter = $.param({r:rowsSelected});
                         let url = mainUrl + `/${id}?${parameter}`;
                         window.open(url)
                     }
