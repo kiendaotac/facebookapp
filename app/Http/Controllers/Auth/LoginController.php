@@ -52,4 +52,9 @@ class LoginController extends Controller
             'password' => 'required|string',
         ]);
     }
+
+    protected function credentials(Request $request)
+    {
+        return array_merge($request->only($this->username(), 'password'), ['state' => 1]);
+    }
 }
